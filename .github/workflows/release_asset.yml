@@ -1,9 +1,6 @@
 name: release
 
-on:
-  push:
-    tags:
-      - 'v*.*.*'
+on: [push]
 
 env:
   APP_NAME: 'Torrentinim'
@@ -16,9 +13,7 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-latest
-          - windows-latest
-          - macOS-latest
+          - ubuntu-18.04
     steps:
       - uses: actions/checkout@v1
       - uses: jiro4989/setup-nim-action@v1
@@ -50,7 +45,7 @@ jobs:
             dist/*.zip
   
   create-release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     needs:
       - build-artifact
     steps:
@@ -76,19 +71,13 @@ jobs:
           path: upload_url.txt
   
   upload-release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     needs: create-release
     strategy:
       matrix:
         include:
-          - os: ubuntu-latest
+          - os: ubuntu-18.04
             asset_name_suffix: linux.tar.gz
-            asset_content_type: application/gzip
-          - os: windows-latest
-            asset_name_suffix: windows.zip
-            asset_content_type: application/zip
-          - os: macOS-latest
-            asset_name_suffix: macos.tar.gz
             asset_content_type: application/gzip
     steps:
       - uses: actions/download-artifact@v2
